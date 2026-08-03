@@ -41,20 +41,22 @@ const RECENT_TRANSACTIONS = [
 export default function Home() {
   return (
     <div className="flex flex-1 flex-col gap-8 p-6">
-      {/* Total balance + actions */}
-      <section className="space-y-4">
-        <h2 className="text-sm font-medium text-muted-foreground">Total balance</h2>
-        <p className="text-3xl font-bold tracking-tight">1.00 EUR</p>
+      {/* Total balance + actions — 0px between label/amount, 20px (space-2xl) to buttons */}
+      <section className="flex flex-col gap-[20px]">
+        <div className="flex flex-col gap-0">
+          <h2 className="text-sm font-medium text-muted-foreground">Total balance</h2>
+          <p className="text-3xl font-bold tracking-tight">1.00 EUR</p>
+        </div>
         <div className="flex flex-wrap gap-2">
-          <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
+          <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
             Send
           </Button>
-          <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
+          <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
             Add money
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button size="sm" variant="outline" className="gap-1">
+              <Button size="lg" variant="outline" className="gap-1">
                 Request
                 <ChevronDown className="size-4" />
               </Button>
