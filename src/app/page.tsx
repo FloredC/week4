@@ -1,35 +1,28 @@
 import Link from "next/link"
+import Image from "next/image"
 import {
   Card,
   CardContent,
-  CardHeader,
   CardTitle,
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { ArrowUpCircle, PlusCircle, ChevronDown } from "lucide-react"
+import { ArrowUpCircle, PlusCircle } from "lucide-react"
+
+import europeFlag from "@/assets/flags/europe.png"
+import australiaFlag from "@/assets/flags/australia.png"
+import canadaFlag from "@/assets/flags/canada.png"
+import unitedKingdomFlag from "@/assets/flags/united-kingdom.png"
 
 /**
  * DESIGNER NOTE: Wise-style dashboard — layout and structure only.
- * All core sections use ShadCN components. Designers can restyle to match Wise UI (colours, typography, spacing).
- *
- * Sections:
- * — Total balance + action buttons (Send, Add money, Request)
- * — Currency account cards (EUR, AUD, CAD, GBP)
- * — Recent transactions list
- * — Footer (Provided by Wise Assets Europe)
+ * Flag assets live in src/assets/flags/ (also copied to public/assets/flags/).
  */
 
 const CURRENCY_ACCOUNTS = [
-  { code: "EUR", label: "EUR", accountId: "51568", balance: "1.00", flag: "🇪🇺" },
-  { code: "AUD", label: "AUD", accountId: "30779", balance: "0.00", flag: "🇦🇺" },
-  { code: "CAD", label: "CAD", accountId: "15376", balance: "0.00", flag: "🇨🇦" },
-  { code: "GBP", label: "GBP", accountId: "13159", balance: "0.00", flag: "🇬🇧" },
+  { code: "EUR", label: "EUR", accountId: "51568", balance: "1.00", flag: europeFlag, flagAlt: "European Union flag" },
+  { code: "AUD", label: "AUD", accountId: "30779", balance: "0.00", flag: australiaFlag, flagAlt: "Australia flag" },
+  { code: "CAD", label: "CAD", accountId: "15376", balance: "0.00", flag: canadaFlag, flagAlt: "Canada flag" },
+  { code: "GBP", label: "GBP", accountId: "13159", balance: "0.00", flag: unitedKingdomFlag, flagAlt: "United Kingdom flag" },
 ]
 
 const RECENT_TRANSACTIONS = [
@@ -40,52 +33,46 @@ const RECENT_TRANSACTIONS = [
 
 export default function Home() {
   return (
-    <div className="flex flex-1 flex-col gap-8 p-6">
-      {/* Total balance + actions — 0px between label/amount, 20px (space-2xl) to buttons */}
+    <div className="mx-auto flex w-full max-w-[976px] flex-1 flex-col gap-[56px] space-y-0 px-6 pb-6 pt-[56px]">
       <section className="flex flex-col gap-[20px]">
         <div className="flex flex-col gap-0">
           <h2 className="text-sm font-medium text-muted-foreground">Total balance</h2>
           <p className="text-3xl font-bold tracking-tight">1.00 EUR</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
-            Send
-          </Button>
-          <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
-            Add money
-          </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button size="lg" variant="outline" className="gap-1">
-                Request
-                <ChevronDown className="size-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
-              <DropdownMenuItem>Request from bank account</DropdownMenuItem>
-              <DropdownMenuItem>Request from card</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Button size="sm">Send money</Button>
+          <Button size="sm" variant="secondary">Add money</Button>
+          <Button size="sm" variant="secondary">Request money</Button>
         </div>
       </section>
 
-      {/* Currency account cards */}
-      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {CURRENCY_ACCOUNTS.map((account) => (
-          <Card key={account.code} className="bg-muted/50">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <span className="text-lg" aria-hidden>{account.flag}</span>
-              <CardTitle className="text-base font-medium">{account.label}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              <p className="text-xs text-muted-foreground">Account - {account.accountId}</p>
-              <p className="text-2xl font-bold">{account.balance}</p>
-            </CardContent>
-          </Card>
-        ))}
+      {/* Currency account cards — fixed 256×206, 12px gap, horizontal scroll */}
+      <section className="-mx-6 overflow-x-auto px-6">
+        <div className="flex w-max gap-[12px]">
+          {CURRENCY_ACCOUNTS.map((account) => (
+            <Card
+              key={account.code}
+              className="h-[206px] w-[256px] shrink-0 justify-between gap-0 overflow-hidden bg-muted/50 p-4"
+            >
+              <div className="flex items-center gap-3">
+                <Image
+                  src={account.flag}
+                  alt={account.flagAlt}
+                  width={48}
+                  height={48}
+                  className="size-[48px] rounded-full"
+                />
+                <CardTitle className="text-base font-medium">{account.label}</CardTitle>
+              </div>
+              <CardContent className="space-y-1 px-0">
+                <p className="text-xs text-muted-foreground">Account - {account.accountId}</p>
+                <p className="text-2xl font-bold">{account.balance}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </section>
 
-      {/* Recent transactions */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">Transactions</h2>
@@ -96,10 +83,10 @@ export default function Home() {
             See all
           </Link>
         </div>
-        <ul className="divide-y divide-border rounded-lg border bg-card">
+        <ul className="divide-y divide-border rounded-lg">
           {RECENT_TRANSACTIONS.map((tx) => (
             <li key={tx.id} className="flex items-center gap-4 px-4 py-3">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-muted">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-card">
                 <tx.icon className="size-5 text-muted-foreground" />
               </div>
               <div className="min-w-0 flex-1">
@@ -117,7 +104,6 @@ export default function Home() {
         </ul>
       </section>
 
-      {/* Footer */}
       <footer className="mt-auto pt-4">
         <p className="text-xs text-muted-foreground">
           Provided by Wise Assets Europe
